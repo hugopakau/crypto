@@ -7,14 +7,10 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 
-import okio.BufferedSource;
-import okio.Okio;
-import okio.Source;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class MainActivity extends Activity {
     private static final String IPIFY = "https://api.ipify.org?format=json";
@@ -36,33 +32,26 @@ public class MainActivity extends Activity {
                 try {
                     //String coins = "https://min-api.cryptocompare.com/data/all/coinlist"
                     long before = System.currentTimeMillis();
-                    URL url = new URL(COINS);
-                    URLConnection urlConnection = url.openConnection();
-                    InputStream inputStream = urlConnection.getInputStream();
+                    OkHttpClient client = new OkHttpClient();
+                    Request request = new Request.Builder()
+                            .url(COINS)
+                            .build();
+                    Response response = client.newCall(request).execute();
 
-                    Source source = Okio.source(inputStream);
-                    BufferedSource bufferedSource = Okio.buffer(source);
-                    final String result = bufferedSource.readUtf8();
+                    final String result = response.body().string();
 
                     long after = System.currentTimeMillis();
-                    Log.d("PAKAU", String.valueOf(after-before));
+                    Log.d("PAKAU", String.valueOf(after - before));
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             textView.setText(result);
                         }
                     });
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-
-
             }
         }.start();
-
     }
 }
-//https://min-api.cryptocompare.com/data/all/coinlist
