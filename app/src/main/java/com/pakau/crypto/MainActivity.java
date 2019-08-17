@@ -3,6 +3,7 @@ package com.pakau.crypto;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -15,15 +16,17 @@ import java.net.URLConnection;
 
 public class MainActivity extends Activity {
     private static final String IPIFY = "https://api.ipify.org?format=json";
+    private static final String COINS = "https://min-api.cryptocompare.com/data/top/totalvolfull?limit=10&tsym=USD";
     private TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         textView = new TextView(this);
+        ScrollView scrollView = new ScrollView(this);
+        scrollView.addView(textView);
 
-
-        setContentView(textView);
+        setContentView(scrollView);
 
         new Thread() {
             @Override
@@ -32,7 +35,7 @@ public class MainActivity extends Activity {
                 try {
                     //String coins = "https://min-api.cryptocompare.com/data/all/coinlist"
                     long before = System.currentTimeMillis();
-                    URL url = new URL(IPIFY);
+                    URL url = new URL(COINS);
                     URLConnection urlConnection = url.openConnection();
                     InputStream inputStream = urlConnection.getInputStream();
                     BufferedReader bufferedReader =
